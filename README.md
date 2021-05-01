@@ -5,9 +5,9 @@ Título do Trabalho: **Análise comparativa de modelos de redes neurais artifici
 
 # Menu
 
-*Objetivo
-*Referencial teórico
-*Metodologia
-*Resultados
-*Conclusão
++ [Objetivo]()
++ [Referencial teórico]()
++ [Metodologia]()
++ [Resultados]()
++ [Conclusão]()
 
