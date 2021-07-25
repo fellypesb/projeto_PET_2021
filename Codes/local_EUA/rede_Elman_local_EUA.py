@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jun  10 14:36:17 2021
+Created on Sun Jul  4 20:38:25 2021
 
-@author: Fellype Siqueira Barroso
+@author: fellypesb
 
 
 Código destinado a otimização dos hiperparâmetros, teste dos melhores modelos,
 e plotagem dos gráficos de predições.
 
-
-Local dos Dados: BR
+Local dos Dados: EUA
 
 """
 
@@ -22,9 +21,9 @@ def data_import(case_study):
     '''
         Realiza a importação dos dados de acordo com o estudo de caso especificado
     '''
-    url_train = 'https://github.com/fellypesb/projeto_PET_2021/raw/main/Dados/local_BR/train_local_BR.csv'
-    url_valid = 'https://github.com/fellypesb/projeto_PET_2021/raw/main/Dados/local_BR/valid_local_BR.csv'
-    url_test = 'https://github.com/fellypesb/projeto_PET_2021/raw/main/Dados/local_BR/test_local_BR.csv'
+    url_train = 'https://github.com/fellypesb/projeto_PET_2021/raw/main/Dados/local_EUA/train_local_EUA.csv'
+    url_valid = 'https://github.com/fellypesb/projeto_PET_2021/raw/main/Dados/local_EUA/valid_local_EUA.csv'
+    url_test = 'https://github.com/fellypesb/projeto_PET_2021/raw/main/Dados/local_EUA/test_local_EUA.csv'
     
     if case_study == 'E1':
         train = pd.read_csv(url_train,
@@ -47,12 +46,12 @@ def data_import(case_study):
         
     if case_study == 'E3':
         train = pd.read_csv(url_train,
-                    usecols=['hour', 'month', 'ghi', 'solar_zenith_angle', 'clearsky_ghi', 'relative_humidity', 'temperature'])
+                    usecols=['seasons', 'ghi', 'solar_zenith_angle', 'clearsky_ghi', 'relative_humidity', 'temperature'])
         valid = pd.read_csv(url_valid,
-                    usecols=['hour', 'month', 'ghi', 'solar_zenith_angle', 'clearsky_ghi', 'relative_humidity', 'temperature'])
+                    usecols=['seasons', 'ghi', 'solar_zenith_angle', 'clearsky_ghi', 'relative_humidity', 'temperature'])
         
         test = pd.read_csv(url_test,
-                    usecols=['hour', 'month', 'ghi', 'solar_zenith_angle', 'clearsky_ghi', 'relative_humidity', 'temperature'])
+                    usecols=['seasons', 'ghi', 'solar_zenith_angle', 'clearsky_ghi', 'relative_humidity', 'temperature'])
         
     
     if case_study == 'E4':
@@ -87,7 +86,6 @@ y_valid = valid['ghi']
 
 X_test = test.drop(['ghi'], axis=1)
 y_test = test['ghi']
-
 
 #%%
 
@@ -161,7 +159,7 @@ def sliding_window(X_train, y_train, X_valid, X_test, delay):
 
 # Aplicação da janela deslizante - E1
 
-DELAY = 13  # valores de delay -> [3, 5, 8, 13]
+DELAY = 8  # valores de delay -> [3, 5, 8, 13]
 
 X_train, y_train, X_valid, X_test = sliding_window(train_norm, train_norm, valid_norm, test_norm, DELAY)
 
@@ -182,9 +180,9 @@ from keras.models import Sequential
 from keras.layers import Dense, SimpleRNN
 from keras.optimizers import SGD
 from keras.callbacks import EarlyStopping
-from kerastuner.tuners import RandomSearch
-from kerastuner import HyperParameters as hp
-from kerastuner import HyperModel
+from keras_tuner.tuners import RandomSearch
+from keras_tuner import HyperParameters as hp
+from keras_tuner import HyperModel
 import random as python_random
 import tensorflow as tf
 import time
@@ -243,7 +241,7 @@ tuner.results_summary()
 
 # Treinamento dos modelos com os melhores hiperparâmetros - E1, E2, E3, E4
 
-units = 22
+units = 38
 activation = 'relu'
 learning_rate = 0.05
 momentum = 0.9
@@ -376,7 +374,7 @@ plt.plot(x2,'--', label='PREDIÇÕES ELMAN', linewidth=2)
 #error = abs(x2 - x1)
 # plt.plot(error, '-.', label='ERROR', linewidth=2)
 plt.legend(loc='best', shadow=True)
-plt.xlim(0, 427)
-plt.ylim(top=1200)
+plt.xlim(0, 475)
+plt.ylim(top=700)
 plt.grid(alpha=0.4)
 #plt.savefig('modelo.png', dpi=300)
